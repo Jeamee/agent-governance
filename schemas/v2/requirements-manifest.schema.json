@@ -28,7 +28,7 @@
       "type": "object",
       "required": ["id", "kind", "required_verifiers"],
       "properties": {
-        "id": {"type": "string", "pattern": "^(ACC|ARC|OPS|UIQ)-[A-Z0-9]+-[0-9]{3}$"},
+        "id": {"type": "string", "pattern": "^(ACC|ARC|OPS|UIQ)-(?:[A-Z0-9]+-)*[A-Z0-9]+-[0-9]{3}$"},
         "kind": {"enum": ["behavior", "architecture", "operability", "ui_quality"]},
         "preconditions": {"type": "string", "minLength": 1},
         "action": {"type": "string", "minLength": 1},
