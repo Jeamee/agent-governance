@@ -1,0 +1,19 @@
+task_id: GOV-BOOTSTRAP-M0
+design_ref:
+  repository: Jeamee/agent-governance
+  commit: 6e38a3f65bae65a65863cf9670410ff6f6c8091d
+  path: docs/designs/governance-bootstrap/
+  digest: f6ceea941823792cfde27ab6a0cd73316645a3b9791d2c0cf7a75915e2a3fb4b
+gate_ref:
+  repository: Jeamee/agent-governance
+  commit: 6e38a3f65bae65a65863cf9670410ff6f6c8091d
+allowed_repositories:
+  - agent-governance
+  - agent-governance-probe-github
+  - agent-governance-probe-gitea
+  - governance-poc-diffcover
+  - governance-poc-uv
+implementation_plan_digest: 90db55b41efd8eb14d2e1f37bb0081dcb9625dc20549467e705b49c81ce950c7
+required_profiles:
+  - local-python
+lead_repository: agent-governance
