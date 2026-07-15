@@ -1,0 +1,17 @@
+schema_version: 2
+task_id: GOV-CLI-M1
+design_ref:
+  repository: Jeamee/agent-governance
+  commit: cd020e9b9ac5fa5b5c53c3f76ed2a81072418dec
+  path: docs/designs/governance-m1/
+  digest: 9ba0993c6c000b7a2f1a28d9aa85d83e3130d293ed9b88ffcb5bce9e7340540e
+gate_ref:
+  repository: Jeamee/agent-governance
+  commit: cd020e9b9ac5fa5b5c53c3f76ed2a81072418dec
+allowed_repositories:
+  - agent-governance
+implementation_plan_digest: 408b60251dca5f729113ece8493f63c79a536c0a540630706a2f226d10f54b84
+required_profiles:
+  - local-python
+lead_repository: agent-governance
+coverage_base_commit: cd020e9b9ac5fa5b5c53c3f76ed2a81072418dec
