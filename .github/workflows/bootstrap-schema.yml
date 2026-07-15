@@ -16,3 +16,22 @@ jobs:
       - run: uv run --locked --project cli python -m governance.schema_check fixtures/schema-compat/synthetic-m1-v2/ --authorization fixtures/schema-compat/synthetic-m1-v2/authorization-record.yaml
       - run: uv run --locked --project cli python -m governance.schema_check docs/designs/governance-m1/ --authorization fixtures/schema-compat/synthetic-m1-v2/authorization-record.yaml
       - run: uv run --locked --project cli python -m governance.schema_check --validate-examples
+
+  m1-governance:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.11.2"
+      - run: uv run --locked --project cli pytest cli/tests --junitxml reports/junit-suite.xml --cov governance --cov-branch --cov-report xml:reports/coverage.xml --cov-report json:reports/coverage.json
+      - run: uv run --locked --project cli pytest cli/tests -m dualmode --junitxml reports/junit-dualmode.xml
+      - run: uv run --locked --project cli python -m governance.fixtures_runner fixtures/m1 --oracle docs/designs/governance-m1/fixture-oracle.yaml --report reports/fixtures.json
+      - run: uv run --locked --project cli diff-cover reports/coverage.xml --compare-branch cd020e9b9ac5fa5b5c53c3f76ed2a81072418dec --fail-under 90
+      - run: |
+          design_commit="$(uv run --locked --project cli python -c 'import yaml; print(yaml.safe_load(open(".governance/authorizations/GOV-CLI-M1.yaml"))["design_ref"]["commit"])')"
+          tmpdir="$(mktemp -d)"
+          git show "$design_commit:docs/designs/governance-m1/tools/branch_exact.py" > "$tmpdir/branch_exact.py"
+          git show "$design_commit:docs/designs/governance-m1/modules.yaml" > "$tmpdir/modules.yaml"
+          uv run --locked --project cli python "$tmpdir/branch_exact.py" --coverage-json reports/coverage.json --modules "$tmpdir/modules.yaml" MODULE-M1-DECISION-VERIFY MODULE-M1-DECISION-SUBCHECKS
+      - run: uv run --locked --project cli python -m governance.subchecks.coverage --report reports/coverage.json --modules docs/designs/governance-m1/modules.yaml --branch-exact MODULE-M1-DECISION-VERIFY MODULE-M1-DECISION-SUBCHECKS
