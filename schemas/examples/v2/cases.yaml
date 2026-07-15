@@ -61,7 +61,7 @@ modules:
   valid: { schema_version: 2, modules: [{ module_id: MODULE-TASK-ONE, prefix: cli/src/governance/ }] }
   invalid: { schema_version: 2, modules: [{ module_id: invalid, prefix: src/ }] }
 requirements-manifest:
-  valid: { schema_version: 2, task_id: TASK-001, requirements: [{ id: ACC-TASK-001, kind: behavior, preconditions: ready, action: run, expected: pass, forbidden: fail, required_verifiers: [{ type: test, id: TEST-TASK-001 }] }] }
+  valid: { schema_version: 2, task_id: TASK-001, requirements: [{ id: ACC-M1-ORACLE-001, kind: behavior, preconditions: ready, action: run, expected: pass, forbidden: fail, required_verifiers: [{ type: test, id: TEST-TASK-001 }] }] }
   invalid: { schema_version: 2, task_id: TASK-001, requirements: [{ id: BAD, kind: behavior, required_verifiers: [] }] }
 verification-plan:
   valid: { schema_version: 2, verifiers: [], commands: [], rubrics: [] }
