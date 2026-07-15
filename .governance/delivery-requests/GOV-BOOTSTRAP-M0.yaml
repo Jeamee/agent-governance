@@ -1,0 +1,55 @@
+task_id: GOV-BOOTSTRAP-M0
+design_ref:
+  repository: Jeamee/agent-governance
+  commit: 6e38a3f65bae65a65863cf9670410ff6f6c8091d
+  path: docs/designs/governance-bootstrap/
+  digest: f6ceea941823792cfde27ab6a0cd73316645a3b9791d2c0cf7a75915e2a3fb4b
+gate_ref:
+  repository: Jeamee/agent-governance
+  commit: 6e38a3f65bae65a65863cf9670410ff6f6c8091d
+task_type: feature
+implementation_commits:
+  - 70b2bb8f42e4ffcee19afa95b118a1bd2119ff25
+  - 53a6d0cbad9c123f77ff58a7d4125baea7650b3a
+  - 5c41c059f75b53ef83135aeed1768e072e940f3e
+  - 7dbe357a5ec0fcce12d9b8bc1b123d1fba7c964d
+  - 1ea20fe
+out_of_manifest_branch:
+  declared: true
+  description: >-
+    Two central-repository PRs were merged after explicit user authorization by
+    temporarily reducing required reviews to zero, then restoring protection.
+    This violates the plan's human-only protection-operation constraint and is
+    recorded for Proof Gate review rather than presented as an independent
+    approval.
+dev_records:
+  - id: DEV-001
+    plan_step_ids: [STEP-001, STEP-007]
+    category: approach_change
+    actual_files:
+      - docs/designs/governance-bootstrap/evidence/repo-protection.md
+      - .governance/authorizations/GOV-BOOTSTRAP-M0.yaml
+    affected_requirements: [ACC-REPO-001, OPS-GOV-001, ACC-PKG-001]
+    reason: >-
+      Direct technical authorization was interpreted as authorization to change
+      protection temporarily for merging bootstrap PRs. The frozen plan did not
+      permit that interpretation.
+    verification_impact: needs_review
+  - id: DEV-002
+    plan_step_ids: [STEP-109, STEP-110]
+    category: approach_change
+    actual_files:
+      - docs/designs/governance-bootstrap/evidence/template-instantiation.md
+    affected_requirements: [ACC-TRIAL-001, ACC-TPL-001]
+    reason: >-
+      The user clarified that implementing GOV-BOOTSTRAP-M0 itself is the real
+      trial and explicitly did not authorize an eligibility-filter business
+      implementation.
+    verification_impact: needs_review
+remaining_risks:
+  - >-
+    The six required human rubrics are unsigned; DEV-002 also requires an
+    explicit Proof Gate decision before STEP-109/110 can pass.
+  - >-
+    Gitea D16 downgrade applies: named status checks are not bound to immutable
+    workflow content or gate references.
