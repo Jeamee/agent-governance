@@ -1,0 +1,25 @@
+version: 1
+runner_profiles:
+  local-python:
+    python: "3.12"
+    command_runner: uv
+report_slots:
+  - evidence/repo-protection.md
+  - evidence/methodology-migration.md
+  - evidence/package-freeze.md
+  - evidence/schema-self-validation.md
+  - evidence/probe-github.md
+  - evidence/probe-gitea.md
+  - evidence/poc-diffcover.md
+  - evidence/poc-uv.md
+  - evidence/template-instantiation.md
+protected_paths:
+  - .github/
+  - .governance/
+  - docs/designs/
+derived_paths: []
+forbidden_generic_roots:
+  - cli/
+  - adapters/
+  - schemas/
+  - templates/
