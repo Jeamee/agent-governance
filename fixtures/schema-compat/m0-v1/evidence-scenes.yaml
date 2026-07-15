@@ -1,0 +1,15 @@
+# GOV-BOOTSTRAP-M0 evidence scenes（硬冻结）
+# 本任务无 UI；evidence scene 在此退化为"证据文档必须覆盖的固定场景"，防 Worker 自选证据
+scenes:
+  - id: SCENE-PROT-001
+    for: EVIDENCE-REPO-PROT
+    must_show: 用实施 token 直接 push main 被拒的原始输出；用人类账号经 PR + 人审合入成功的对照
+  - id: SCENE-PROBE-001
+    for: [EVIDENCE-PROBE-GH, EVIDENCE-PROBE-GITEA]
+    must_show: 每个探针项的攻击尝试原样操作记录（删 workflow / 同名伪造 / 换 gate_ref / 改 job name），不得只展示防守成功的场景
+  - id: SCENE-POC-001
+    for: EVIDENCE-POC-DIFFCOVER
+    must_show: 至少一个 TSX 文件的变更行在 diff-cover 报告中的行号对照；一个故意未覆盖的变更行被报出
+  - id: SCENE-POC-002
+    for: EVIDENCE-POC-UV
+    must_show: 篡改 uv.lock 后重装的行为差异（证明 lock 真被消费或真没被消费）

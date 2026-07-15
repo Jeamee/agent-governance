@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance verification plan",
+  "type": "object",
+  "required": ["verifiers", "commands", "rubrics"],
+  "properties": {
+    "verifiers": {"type": "array", "items": {"type": "object", "required": ["id", "type", "report_slot", "required_content"], "properties": {"id": {"type": "string"}, "type": {"type": "string"}, "report_slot": {"type": "string"}, "command_id": {"type": "string"}, "required_content": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}},
+    "commands": {"type": "array", "items": {"type": "object", "required": ["command_id", "runner_profile", "command"], "properties": {"command_id": {"type": "string"}, "runner_profile": {"type": "string"}, "command": {"type": "string"}, "note": {"type": "string"}}, "additionalProperties": false}},
+    "rubrics": {"type": "array", "items": {"type": "object", "required": ["rubric_id", "question"], "properties": {"rubric_id": {"type": "string"}, "question": {"type": "string"}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,12 @@
+schema_version: 2
+task_id: GOV-CLI-M1-SYNTHETIC
+requirements:
+  - id: ACC-M1-001
+    kind: behavior
+    preconditions: a protected v2 authorization exists
+    action: run governance verify
+    expected: all deterministic checks pass
+    forbidden: a worker-selected schema version is accepted
+    required_verifiers:
+      - type: test
+        id: TEST-M1-SYNTHETIC

@@ -1,0 +1,21 @@
+# GOV-BOOTSTRAP-M0 模块边界（第二层机器投影，硬冻结）
+# 语义源头：architecture-design.md §1；机器只核 ID 集合一致与前缀包含关系
+modules:
+  - module_id: MODULE-GOV-METHODOLOGY
+    prefix: methodology/
+  - module_id: MODULE-GOV-SCHEMAS
+    prefix: schemas/
+  - module_id: MODULE-GOV-CLI
+    prefix: cli/
+  - module_id: MODULE-GOV-ADAPTERS
+    prefix: adapters/
+  - module_id: MODULE-GOV-TEMPLATES
+    prefix: templates/
+  - module_id: MODULE-GOV-FIXTURES
+    prefix: fixtures/
+  - module_id: MODULE-GOV-DOCS
+    prefix: docs/
+  - module_id: MODULE-GOV-GOVERNANCE
+    prefix: .governance/
+  - module_id: MODULE-GOV-CI
+    prefix: .github/

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance requirements manifest v2",
+  "type": "object",
+  "required": ["schema_version", "task_id", "requirements"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "task_id": {"type": "string", "minLength": 1},
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/requirement"}
+    }
+  },
+  "$defs": {
+    "verifier": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["test", "contract_test", "real_db_test", "browser_test", "umbrella_e2e", "mutation", "evidence", "human_approval", "static_rule", "regression_red", "before_after"]},
+        "id": {"type": "string", "minLength": 1},
+        "rubric": {"type": "string", "minLength": 1}
+      },
+      "anyOf": [{"required": ["id"]}, {"required": ["rubric"]}],
+      "additionalProperties": false
+    },
+    "requirement": {
+      "type": "object",
+      "required": ["id", "kind", "required_verifiers"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^(ACC|ARC|OPS|UIQ)-[A-Z0-9]+-[0-9]{3}$"},
+        "kind": {"enum": ["behavior", "architecture", "operability", "ui_quality"]},
+        "preconditions": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "minLength": 1},
+        "expected": {"type": "string", "minLength": 1},
+        "forbidden": {"type": "string", "minLength": 1},
+        "requirement": {"type": "string", "minLength": 1},
+        "required_verifiers": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/verifier"}},
+        "any_of": {
+          "type": "array",
+          "minItems": 2,
+          "items": {"$ref": "#/$defs/verifier"},
+          "not": {"contains": {"properties": {"type": {"enum": ["evidence", "human_approval"]}}, "required": ["type"]}}
+        }
+      },
+      "allOf": [
+        {"if": {"properties": {"kind": {"const": "behavior"}}, "required": ["kind"]}, "then": {"required": ["preconditions", "action", "expected", "forbidden"]}},
+        {"if": {"properties": {"kind": {"enum": ["architecture", "operability"]}}, "required": ["kind"]}, "then": {"required": ["requirement"]}}
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

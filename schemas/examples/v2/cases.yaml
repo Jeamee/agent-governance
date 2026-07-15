@@ -1,0 +1,125 @@
+# Every v2 schema has one valid and invalid example; the compatibility test loads this file.
+authorization-record:
+  valid:
+    schema_version: 2
+    task_id: TASK-001
+    design_ref: { repository: owner/repo, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, path: docs/designs/task/, digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    gate_ref: { repository: owner/governance, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    allowed_repositories: [repo]
+    implementation_plan_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    required_profiles: [local]
+    lead_repository: repo
+    coverage_base_commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+  invalid: { schema_version: 2, task_id: TASK-001 }
+ci-attestation:
+  valid:
+    schema_version: 2
+    checked_out_shas: { repo: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    gate_ref: { repository: owner/governance, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    verifier_results: []
+    report_slots: []
+    runner: { name: runner, tool_versions: {} }
+    generated_at: '2026-07-15T00:00:00Z'
+    status: pass
+  invalid: { schema_version: 2, status: pass }
+delivery-request:
+  valid:
+    schema_version: 2
+    task_id: TASK-001
+    design_ref: { repository: owner/repo, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, path: docs/designs/task/, digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    gate_ref: { repository: owner/governance, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    task_type: feature
+    implementation_commits: [aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]
+    out_of_manifest_branch: { declared: false, description: '' }
+    dev_records: []
+    remaining_risks: []
+  invalid: { schema_version: 2, task_id: TASK-001 }
+evidence-scenes:
+  valid: { schema_version: 2, scenes: [{ id: SCENE-TASK-001, for: TASK-001, must_show: result }] }
+  invalid: { schema_version: 2, scenes: [{ id: invalid, for: TASK-001, must_show: result }] }
+exception:
+  valid:
+    schema_version: 2
+    repository: repo
+    base_sha: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    head_sha: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    diff_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    policy_rule: protected_path
+    paths: [path]
+    reason: reason
+    expires_at: '2026-07-16T00:00:00Z'
+    approval: { mechanism: standing_authorization }
+    revoked: false
+  invalid: { schema_version: 2, repository: repo }
+human-approval:
+  valid: { schema_version: 2, rubric_id: rubric, object_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, approved_by: human, approved_at: '2026-07-15T00:00:00Z' }
+  invalid: { schema_version: 2, rubric_id: rubric }
+implementation-plan:
+  valid: { schema_version: 2, task_id: TASK-001, steps: [{ step_id: STEP-001, kind: change, depends_on: [], targets: [{ path: file.py }], requirement_ids: [ACC-TASK-001] }] }
+  invalid: { schema_version: 2, task_id: TASK-001, steps: [] }
+modules:
+  valid: { schema_version: 2, modules: [{ module_id: MODULE-TASK-ONE, prefix: cli/src/governance/ }] }
+  invalid: { schema_version: 2, modules: [{ module_id: invalid, prefix: src/ }] }
+requirements-manifest:
+  valid: { schema_version: 2, task_id: TASK-001, requirements: [{ id: ACC-TASK-001, kind: behavior, preconditions: ready, action: run, expected: pass, forbidden: fail, required_verifiers: [{ type: test, id: TEST-TASK-001 }] }] }
+  invalid: { schema_version: 2, task_id: TASK-001, requirements: [{ id: BAD, kind: behavior, required_verifiers: [] }] }
+verification-plan:
+  valid: { schema_version: 2, verifiers: [], commands: [], rubrics: [] }
+  invalid: { schema_version: 2, verifiers: [{ id: TEST-TASK-001 }] }
+verify-output:
+  valid:
+    schema_version: 2
+    mode: ci
+    status: pass
+    exit_code: 0
+    subchecks:
+      - { name: schema, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: authorization, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: frozen, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: acceptance, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: plan, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: coverage, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: effectiveness, status: pass, missing_ids: [], sources: [], reproduction: command }
+      - { name: policy, status: pass, missing_ids: [], sources: [], reproduction: command }
+  invalid: { schema_version: 2, mode: ci, status: pass, exit_code: 0, subchecks: [] }
+fixture-oracle:
+  valid:
+    schema_version: 2
+    task_id: TASK-001
+    fixtures:
+      - &fixture { id: FIX-SCHEMA-PASS-001, subcheck: schema, class: pass, input: fixtures/schema/pass, expected_status: pass, forbidden_misclassification: [fail] }
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+      - *fixture
+  invalid: { schema_version: 2, task_id: TASK-001, fixtures: [] }
+authorization-revocation:
+  valid: { schema_version: 2, authorization_task_id: TASK-001, authorization_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, revoked_at: '2026-07-15T00:00:00Z', approved_by: human }
+  invalid: { schema_version: 2, authorization_task_id: TASK-001 }

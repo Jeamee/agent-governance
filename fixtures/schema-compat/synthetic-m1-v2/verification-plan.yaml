@@ -1,0 +1,17 @@
+schema_version: 2
+verifiers:
+  - id: TEST-M1-SYNTHETIC
+    type: test
+    runner_profile: local-python
+    command_id: pytest-suite
+    report_slot: junit-suite
+    environment: {}
+    mock_policy: boundary_forbidden
+    expected_shards: [suite]
+    expected_instances: all
+    required_content: [ACC-M1-001]
+commands:
+  - command_id: pytest-suite
+    runner_profile: local-python
+    command: uv run --locked --project cli pytest cli/tests
+rubrics: []

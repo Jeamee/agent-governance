@@ -1,0 +1,6 @@
+schema_version: 2
+modules:
+  - module_id: MODULE-M1-DECISION-VERIFY
+    prefix: cli/src/governance/verify/
+  - module_id: MODULE-M1-DECISION-SUBCHECKS
+    prefix: cli/src/governance/subchecks/

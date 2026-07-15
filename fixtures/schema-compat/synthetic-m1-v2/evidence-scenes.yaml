@@ -1,0 +1,5 @@
+schema_version: 2
+scenes:
+  - id: SCENE-M1-SYNTHETIC-001
+    for: ACC-M1-001
+    must_show: v2 instance is selected by authorization

@@ -1,0 +1,141 @@
+# GOV-BOOTSTRAP-M0 requirements manifest（机器规范源，硬冻结）
+# Bootstrap 声明：M0 无 CLI，所有 verifier 由人工按同等 fail-closed 规则执行；本文件同时是八个 schema 草案的首个校验对象（ARC-GOV-004 自举一致性）
+task_id: GOV-BOOTSTRAP-M0
+requirements:
+  - id: ACC-REPO-001
+    kind: behavior
+    preconditions: 中央仓已建，分支保护与 CODEOWNERS 已配置
+    action: 以实施用 token（无 admin scope）直接 push main
+    expected: 平台拒绝 push
+    forbidden: push 成功
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-REPO-PROT }
+
+  - id: ACC-REPO-002
+    kind: behavior
+    preconditions: 七目录骨架就位
+    action: 主持人结构审查
+    expected: 仓内无任何其他项目实例数据（bootstrap 自身治理实例除外）
+    forbidden: specs/<project>、exceptions/<project>、他项目 approvals/delivery 数据出现
+    required_verifiers:
+      - { type: human_approval, rubric: repo-structure-v1 }
+
+  - id: ACC-MIG-001
+    kind: behavior
+    preconditions: 方法论真源在 ~/.agents/AI_DELIVERY_METHODOLOGY.md
+    action: 迁移入仓 methodology/，本地降为 checkout/symlink
+    expected: 仓内为真源；迁移前后内容逐字节一致；本地无可独立编辑副本
+    forbidden: 迁移中内容变更；出现两份可分别编辑的副本
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-MIG }
+
+  - id: ACC-PKG-001
+    kind: behavior
+    preconditions: design-package-v1.1.md 冻结版与 bootstrap 三层在本地
+    action: 按设计包 §4.2 布局提交入仓
+    expected: 全部文件获得不可变 commit SHA；authorization record 以该 SHA 计算 digest 后合入
+    forbidden: 入仓时对冻结内容做任何修改
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-PKG }
+
+  - id: ACC-SCH-001
+    kind: behavior
+    preconditions: 八个 schema 草案完成
+    action: 用草案校验 bootstrap 自身全部 yaml 实例（requirements / modules / verification-plan / evidence-scenes / implementation-plan / authorization）
+    expected: 全部通过；与设计包 §5 规格的任何偏差有书面申报并获批
+    forbidden: 草案与 §5 冲突未申报；跳过任一实例
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-SCH }
+      - { type: human_approval, rubric: schema-draft-v1 }
+
+  - id: ACC-PROBE-001
+    kind: behavior
+    preconditions: 独立探针仓就绪（GitHub 一个 + Gitea 一个）
+    action: 执行 GitHub 3 项 + Gitea 9 项探针（设计包 §7 清单）
+    expected: 每项有"支持/不支持"明确判定 + 截图/日志
+    forbidden: 任何一项以文档推测代替实测；含糊结论
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-PROBE-GH }
+      - { type: evidence, id: EVIDENCE-PROBE-GITEA }
+
+  - id: ACC-POC-001
+    kind: behavior
+    preconditions: Python + TS 两个最小样例仓就绪
+    action: pytest-cov 与 vitest istanbul 各出 Cobertura，diff-cover 统一消费
+    expected: TSX sourcemap 后行号与 git diff 对齐的结论落档（通过，或失败 + 自研决策建议）
+    forbidden: 只验证 Python 侧即宣称两栈统吃
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-POC-DIFFCOVER }
+
+  - id: ACC-POC-002
+    kind: behavior
+    preconditions: cli/ 占位骨架（pyproject + uv.lock + 空入口）已提交
+    action: 分别用 `uvx --from git+…#subdirectory=cli` 与 checkout@SHA + `uv run --project cli` 在无缓存环境执行
+    expected: 五项结论落档（安装命令 / lock 是否生效 / uv 版本 pin / 无缓存复现 / 双平台 runner 可执行），选定真实吃到 lock 的方式
+    forbidden: 未验证 lock 生效即选定分发方式
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-POC-UV }
+
+  - id: ACC-TRIAL-001
+    kind: behavior
+    preconditions: 三层模板与 schema 草案入仓
+    action: 选一个真实业务任务，人工走完整流程（三层设计 → 对抗审议 → 冻结 → authorization → 实施 → delivery request → 人工按 §6 规则对账）
+    expected: 交付含完整证明包；人工对账采用与 CLI 相同的 fail-closed 规则
+    forbidden: 用玩具任务或简化模板走过场
+    required_verifiers:
+      - { type: human_approval, rubric: bootstrap-trial-v1 }
+
+  - id: ACC-TPL-001
+    kind: ui_quality
+    preconditions: bootstrap 与试跑任务两次三层实例化完成
+    action: 主持人按 rubric 审查
+    expected: 步骤具体、文件目标明确、完成判据可观察、无"大而全步骤"空壳认领全部 requirement
+    forbidden: 空壳步骤通过审查
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-TPL }
+      - { type: human_approval, rubric: plan-quality-v1 }
+
+  - id: ARC-GOV-001
+    kind: architecture
+    requirement: 中央仓只含七个白名单目录 + bootstrap 自身治理实例，无其他项目实例数据
+    required_verifiers:
+      - { type: human_approval, rubric: repo-structure-v1 }
+
+  - id: ARC-GOV-002
+    kind: architecture
+    requirement: adapters 骨架内除 checkout 与调用 CLI 外无治理逻辑（CLI 唯一公共接口结构就位）
+    required_verifiers:
+      - { type: human_approval, rubric: adapter-thinness-v1 }
+
+  - id: ARC-GOV-003
+    kind: architecture
+    requirement: 方法论单一真源，本地侧不可能出现可独立编辑的第二份
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-MIG }
+
+  - id: ARC-GOV-004
+    kind: architecture
+    requirement: schema 草案能校验 bootstrap 自身全部实例（自举一致性）
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-SCH }
+      - { type: human_approval, rubric: schema-draft-v1 }
+
+  - id: OPS-GOV-001
+    kind: operability
+    requirement: main 保护 + CODEOWNERS 覆盖 .github/、.governance/、docs/designs/；Worker 与 CI token 无 admin scope
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-REPO-PROT }
+
+  - id: OPS-GOV-002
+    kind: operability
+    requirement: 选定分发方式在无缓存环境复现同一依赖集
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-POC-UV }
+
+  - id: OPS-GOV-003
+    kind: operability
+    requirement: 探针结论足以驱动 D16/D14 预裁决分支落地，无含糊判定
+    required_verifiers:
+      - { type: evidence, id: EVIDENCE-PROBE-GH }
+      - { type: evidence, id: EVIDENCE-PROBE-GITEA }
+      - { type: human_approval, rubric: probe-conclusion-v1 }

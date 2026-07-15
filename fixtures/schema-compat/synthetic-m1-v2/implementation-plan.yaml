@@ -1,0 +1,19 @@
+schema_version: 2
+task_id: GOV-CLI-M1-SYNTHETIC
+steps:
+  - step_id: STEP-001
+    kind: change
+    depends_on: []
+    targets:
+      - module_id: MODULE-M1-DECISION-VERIFY
+        prefix: cli/src/governance/verify/
+        scope_reason: verify aggregation lives in this module
+    requirement_ids: [ACC-M1-001]
+  - step_id: STEP-101
+    kind: verify
+    depends_on: [STEP-001]
+    verifier_ids: [TEST-M1-SYNTHETIC]
+    completion:
+      command_ids: [pytest-suite]
+      evidence_scene_ids: []
+      approval_rubric_ids: []

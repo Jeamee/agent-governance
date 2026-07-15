@@ -1,0 +1,63 @@
+# Every immutable v1 schema has one smallest valid and invalid example.
+authorization-record:
+  valid:
+    task_id: TASK-001
+    design_ref: { repository: owner/repo, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, path: docs/designs/task/, digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    gate_ref: { repository: owner/governance, commit: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    allowed_repositories: [repo]
+    implementation_plan_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    required_profiles: [local]
+    lead_repository: repo
+  invalid: { task_id: TASK-001 }
+ci-attestation:
+  valid:
+    checked_out_shas: { repo: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa }
+    gate_ref: {}
+    verifier_results: []
+    report_slots: []
+    runner: {}
+    generated_at: '2026-07-15T00:00:00Z'
+    status: pass
+  invalid: { status: pass }
+delivery-request:
+  valid:
+    task_id: TASK-001
+    design_ref: {}
+    gate_ref: {}
+    task_type: feature
+    implementation_commits: [aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]
+    out_of_manifest_branch: { declared: false, description: '' }
+    dev_records: []
+    remaining_risks: []
+  invalid: { task_id: TASK-001 }
+evidence-scenes:
+  valid: { scenes: [{ id: SCENE-TASK-001, for: TASK-001, must_show: result }] }
+  invalid: { scenes: [{ id: invalid, for: TASK-001, must_show: result }] }
+exception:
+  valid:
+    repository: repo
+    base_sha: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    head_sha: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+    diff_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    policy_rule: protected_path
+    paths: [path]
+    reason: reason
+    expires_at: '2026-07-16T00:00:00Z'
+    approval: {}
+    revoked: false
+  invalid: { repository: repo }
+human-approval:
+  valid: { rubric_id: rubric, object_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa, approved_by: human, approved_at: '2026-07-15T00:00:00Z' }
+  invalid: { rubric_id: rubric }
+implementation-plan:
+  valid: { task_id: TASK-001, steps: [{ step_id: STEP-001, kind: change, depends_on: [], targets: [{ path: file.py }], requirement_ids: [ACC-TASK-001] }] }
+  invalid: { task_id: TASK-001, steps: [] }
+modules:
+  valid: { modules: [{ module_id: MODULE-TASK-ONE, prefix: src/ }] }
+  invalid: { modules: [{ module_id: invalid, prefix: src/ }] }
+requirements-manifest:
+  valid: { task_id: TASK-001, requirements: [{ id: ACC-TASK-001, kind: behavior, preconditions: ready, action: run, expected: pass, forbidden: fail, required_verifiers: [{ type: test, id: TEST-TASK-001 }] }] }
+  invalid: { task_id: TASK-001, requirements: [{ id: BAD, kind: behavior, required_verifiers: [] }] }
+verification-plan:
+  valid: { verifiers: [], commands: [], rubrics: [] }
+  invalid: { verifiers: [] }

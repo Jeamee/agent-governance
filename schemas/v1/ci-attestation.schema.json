@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance CI attestation",
+  "type": "object",
+  "required": ["checked_out_shas", "gate_ref", "verifier_results", "report_slots", "runner", "generated_at", "status"],
+  "properties": {
+    "checked_out_shas": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{40}$"}},
+    "gate_ref": {"type": "object"},
+    "verifier_results": {"type": "array"},
+    "report_slots": {"type": "array"},
+    "coverage": {"type": "object"},
+    "effectiveness": {"type": "object"},
+    "evidence_artifact_digest": {"type": "string"},
+    "runner": {"type": "object"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}
+  },
+  "additionalProperties": false
+}
