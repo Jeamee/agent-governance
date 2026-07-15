@@ -1,0 +1,16 @@
+task_id: <TASK-ID>
+steps:
+  - step_id: STEP-001
+    kind: change
+    depends_on: []
+    targets:
+      - path: src/<domain>/target.py
+    requirement_ids: [ACC-<DOMAIN>-001]
+  - step_id: STEP-101
+    kind: verify
+    depends_on: [STEP-001]
+    verifier_ids: [TEST-<DOMAIN>-001]
+    completion:
+      command_ids: [test-domain]
+      evidence_scene_ids: []
+      approval_rubric_ids: []

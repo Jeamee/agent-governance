@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance human approval",
+  "type": "object",
+  "required": ["rubric_id", "object_digest", "approved_by", "approved_at"],
+  "properties": {
+    "rubric_id": {"type": "string"},
+    "object_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "approved_by": {"type": "string"},
+    "approved_at": {"type": "string", "format": "date-time"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,4 @@
+scenes:
+  - id: SCENE-<DOMAIN>-001
+    for: EVIDENCE-<DOMAIN>-001
+    must_show: <fixed proof scene>

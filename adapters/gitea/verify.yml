@@ -1,0 +1,6 @@
+# M0 adapter skeleton. M2 resolution is contingent on Gitea probe evidence.
+# The adapter may checkout a pinned governance revision and invoke the CLI; it
+# must not reimplement schema, policy, acceptance, or authorization logic.
+adapter: gitea-actions
+entrypoint: governance verify --mode ci
+status: reserved-for-m2
