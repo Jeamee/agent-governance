@@ -1,0 +1,11 @@
+task_id: <TASK-ID>
+requirements:
+  - id: ACC-<DOMAIN>-001
+    kind: behavior
+    preconditions: <state before the action>
+    action: <business action>
+    expected: <observable result>
+    forbidden: <must not happen>
+    required_verifiers:
+      - type: test
+        id: TEST-<DOMAIN>-001

@@ -1,0 +1,10 @@
+verifiers:
+  - id: TEST-<DOMAIN>-001
+    type: test
+    report_slot: reports/tests.xml
+    required_content: [executed acceptance id]
+commands:
+  - command_id: test-domain
+    runner_profile: fast
+    command: <protected command>
+rubrics: []
