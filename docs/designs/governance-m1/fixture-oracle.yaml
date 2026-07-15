@@ -1,0 +1,35 @@
+schema_version: 2
+task_id: GOV-CLI-M1
+fixtures:
+  - { id: FIX-SCHEMA-PASS-001, subcheck: schema, class: pass, input: fixtures/m1/schema/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-SCHEMA-REJECT-001, subcheck: schema, class: reject, input: fixtures/m1/schema/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-SCHEMA-BOUNDARY-001, subcheck: schema, class: boundary, input: fixtures/m1/schema/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-SCHEMA-BYPASS-001, subcheck: schema, class: bypass, input: fixtures/m1/schema/bypass-downgrade, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-AUTH-PASS-001, subcheck: authorization, class: pass, input: fixtures/m1/authorization/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-AUTH-REJECT-001, subcheck: authorization, class: reject, input: fixtures/m1/authorization/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-AUTH-BOUNDARY-001, subcheck: authorization, class: boundary, input: fixtures/m1/authorization/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-AUTH-BYPASS-001, subcheck: authorization, class: bypass, input: fixtures/m1/authorization/bypass-revocation, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-FROZEN-PASS-001, subcheck: frozen, class: pass, input: fixtures/m1/frozen/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-FROZEN-REJECT-001, subcheck: frozen, class: reject, input: fixtures/m1/frozen/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-FROZEN-BOUNDARY-001, subcheck: frozen, class: boundary, input: fixtures/m1/frozen/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-FROZEN-BYPASS-001, subcheck: frozen, class: bypass, input: fixtures/m1/frozen/bypass-alias, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-ACCEPTANCE-PASS-001, subcheck: acceptance, class: pass, input: fixtures/m1/acceptance/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-ACCEPTANCE-REJECT-001, subcheck: acceptance, class: reject, input: fixtures/m1/acceptance/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-ACCEPTANCE-BOUNDARY-001, subcheck: acceptance, class: boundary, input: fixtures/m1/acceptance/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-ACCEPTANCE-BYPASS-001, subcheck: acceptance, class: bypass, input: fixtures/m1/acceptance/bypass-stale-report, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-PLAN-PASS-001, subcheck: plan, class: pass, input: fixtures/m1/plan/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-PLAN-REJECT-001, subcheck: plan, class: reject, input: fixtures/m1/plan/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-PLAN-BOUNDARY-001, subcheck: plan, class: boundary, input: fixtures/m1/plan/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-PLAN-BYPASS-001, subcheck: plan, class: bypass, input: fixtures/m1/plan/bypass-derived, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-COVERAGE-PASS-001, subcheck: coverage, class: pass, input: fixtures/m1/coverage/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-COVERAGE-REJECT-001, subcheck: coverage, class: reject, input: fixtures/m1/coverage/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-COVERAGE-BOUNDARY-001, subcheck: coverage, class: boundary, input: fixtures/m1/coverage/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-COVERAGE-BYPASS-001, subcheck: coverage, class: bypass, input: fixtures/m1/coverage/bypass-report, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-EFFECTIVENESS-PASS-001, subcheck: effectiveness, class: pass, input: fixtures/m1/effectiveness/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-EFFECTIVENESS-REJECT-001, subcheck: effectiveness, class: reject, input: fixtures/m1/effectiveness/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-EFFECTIVENESS-BOUNDARY-001, subcheck: effectiveness, class: boundary, input: fixtures/m1/effectiveness/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-EFFECTIVENESS-BYPASS-001, subcheck: effectiveness, class: bypass, input: fixtures/m1/effectiveness/bypass-no-red, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-POLICY-PASS-001, subcheck: policy, class: pass, input: fixtures/m1/policy/pass, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-POLICY-REJECT-001, subcheck: policy, class: reject, input: fixtures/m1/policy/reject, expected_status: fail, forbidden_misclassification: [pass] }
+  - { id: FIX-POLICY-BOUNDARY-001, subcheck: policy, class: boundary, input: fixtures/m1/policy/boundary, expected_status: pass, forbidden_misclassification: [fail] }
+  - { id: FIX-POLICY-BYPASS-001, subcheck: policy, class: bypass, input: fixtures/m1/policy/bypass-exception, expected_status: fail, forbidden_misclassification: [pass] }

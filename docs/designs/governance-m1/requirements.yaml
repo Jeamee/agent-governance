@@ -1,0 +1,236 @@
+schema_version: 2
+task_id: GOV-CLI-M1
+requirements:
+  - id: ACC-CLI-001
+    kind: behavior
+    preconditions: deterministic inputs are identical
+    action: run local and ci modes
+    expected: deterministic conclusions match and ci fails unverifiable results
+    forbidden: ci treats unverifiable as pass
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-SCHEMA-001
+    kind: behavior
+    preconditions: a manifest is structurally invalid
+    action: run schema validation
+    expected: the invalid structure fails
+    forbidden: invalid manifest passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-AUTH-001
+    kind: behavior
+    preconditions: delivery ref differs from authorization
+    action: run authorization validation
+    expected: validation fails
+    forbidden: delivery declaration becomes authoritative
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-AUTH-002
+    kind: behavior
+    preconditions: authorization is introduced by delivery diff
+    action: run authorization validation
+    expected: validation fails
+    forbidden: self authorization passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-AUTH-003
+    kind: behavior
+    preconditions: a protected revocation record exists
+    action: run authorization validation
+    expected: new delivery fails
+    forbidden: revoked authorization passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-AUTH-004
+    kind: behavior
+    preconditions: revocation edge cases exist
+    action: run authorization validation
+    expected: all revocation boundaries fail closed
+    forbidden: automatic replacement or same-PR revocation authority
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-ACC-001
+    kind: behavior
+    preconditions: required verifier output is missing
+    action: run acceptance validation
+    expected: failure names missing id, source and reproduction
+    forbidden: missing verifier passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-ACC-002
+    kind: behavior
+    preconditions: report is missing, early, or lacks a shard
+    action: run acceptance validation
+    expected: failure
+    forbidden: incomplete report passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-ACC-003
+    kind: behavior
+    preconditions: a browser result retried
+    action: parse the report
+    expected: attempts are preserved
+    forbidden: retry history is lost
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-ACC-004
+    kind: behavior
+    preconditions: high-risk instances are incomplete
+    action: run acceptance validation
+    expected: failure
+    forbidden: partial instances pass
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-PLAN-001
+    kind: behavior
+    preconditions: report slot or runner profile differs from plan
+    action: run plan validation
+    expected: failure
+    forbidden: undeclared slot passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-001
+    kind: behavior
+    preconditions: a design reference is broken
+    action: run schema validation
+    expected: failure
+    forbidden: incomplete graph passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-002
+    kind: behavior
+    preconditions: implementation plan baseline changed
+    action: run frozen validation
+    expected: failure
+    forbidden: plan rewrite passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-003
+    kind: behavior
+    preconditions: changed path is not targeted or declared
+    action: run plan validation
+    expected: failure
+    forbidden: unmapped file passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-004
+    kind: behavior
+    preconditions: DEV record misses conditional fields
+    action: run schema validation
+    expected: failure
+    forbidden: free-form DEV passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-005
+    kind: behavior
+    preconditions: completion references unknown data
+    action: run schema validation
+    expected: failure
+    forbidden: unknown command, scene, or rubric passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-006
+    kind: behavior
+    preconditions: derived path has no causal source
+    action: run schema validation
+    expected: failure
+    forbidden: arbitrary path is derived
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-007
+    kind: behavior
+    preconditions: a target prefix lacks module binding
+    action: run schema validation
+    expected: failure
+    forbidden: generic source root passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-IPL-008
+    kind: behavior
+    preconditions: DEV verification impact needs review
+    action: aggregate result
+    expected: final status is needs_review
+    forbidden: automatic pass
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-FRZ-001
+    kind: behavior
+    preconditions: frozen design path changes
+    action: run frozen validation
+    expected: failure
+    forbidden: frozen mutation passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-FRZ-002
+    kind: behavior
+    preconditions: diff base cannot be reached
+    action: run frozen validation
+    expected: failure
+    forbidden: empty diff assumption
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-FRZ-003
+    kind: behavior
+    preconditions: authorization digest differs from frozen design
+    action: run frozen validation
+    expected: failure
+    forbidden: mismatched digest passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-FRZ-004
+    kind: behavior
+    preconditions: oracle is changed, omitted, unordered, or aliased
+    action: run frozen validation
+    expected: failure
+    forbidden: oracle semantics are mutable
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-COV-001
+    kind: behavior
+    preconditions: coverage report is missing or below required proof
+    action: run coverage validation
+    expected: failure
+    forbidden: insufficient coverage passes
+    required_verifiers: [{ type: test, id: TEST-M1-COVERAGE }]
+  - id: ACC-EFF-001
+    kind: behavior
+    preconditions: bugfix lacks base-fail and head-pass reports
+    action: run effectiveness validation
+    expected: failure
+    forbidden: bugfix passes without regression proof
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-POL-001
+    kind: behavior
+    preconditions: protected path changes without a valid exception
+    action: run policy validation
+    expected: failure
+    forbidden: protected mutation passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-POL-002
+    kind: behavior
+    preconditions: a warning heuristic fixture exists
+    action: run policy validation
+    expected: declared warning result
+    forbidden: missing or misclassified heuristic
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-POL-003
+    kind: behavior
+    preconditions: exception lifecycle variants exist
+    action: run policy validation
+    expected: only valid scoped exception permits its diff
+    forbidden: expired, revoked, or wrong exception passes
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-ATT-001
+    kind: behavior
+    preconditions: historical report exists outside this run
+    action: run acceptance validation
+    expected: failure
+    forbidden: stale report is trusted
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ACC-M1-ORACLE-001
+    kind: behavior
+    preconditions: an 8x4 oracle cell is missing
+    action: run fixture meta validation
+    expected: failure
+    forbidden: incomplete matrix passes
+    required_verifiers: [{ type: test, id: TEST-M1-FIXTURES }]
+  - id: ACC-M1-SCHEMAVER-001
+    kind: behavior
+    preconditions: M0 v1, v2, wrong validator, and downgrade inputs exist
+    action: run schema validation
+    expected: authorization-selected version passes only matching instances
+    forbidden: worker selects v1 or removes a v2 declaration
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: ARC-M1-002
+    kind: architecture
+    requirement: each DECISION module is branch exact by frozen independent proof and dogfood proof
+    required_verifiers: [{ type: test, id: TEST-M1-COVERAGE }]
+  - id: ARC-M1-003
+    kind: architecture
+    requirement: JSON output conforms to verify-output v2 and reports are run-bound
+    required_verifiers: [{ type: test, id: TEST-M1-SUITE }]
+  - id: OPS-M1-001
+    kind: operability
+    requirement: required CI context runs suite, fixtures, compatibility checks, and coverage
+    required_verifiers: [{ type: evidence, id: EVIDENCE-M1-CI }]
+  - id: OPS-M1-002
+    kind: operability
+    requirement: incremental mutation covers both decision modules with recorded triage
+    required_verifiers: [{ type: evidence, id: EVIDENCE-M1-MUTATION }]

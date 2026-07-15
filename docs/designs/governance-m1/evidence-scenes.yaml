@@ -1,0 +1,11 @@
+schema_version: 2
+scenes:
+  - id: SCENE-M1-CI-001
+    for: EVIDENCE-M1-CI
+    must_show: required context rejects a deliberately failing fixture and coverage canary
+  - id: SCENE-M1-MUT-001
+    for: EVIDENCE-M1-MUTATION
+    must_show: each surviving DECISION-module mutation has a disposition
+  - id: SCENE-M1-BASELINE-001
+    for: EVIDENCE-M1-BASELINE
+    must_show: first full repository baseline data and sha256 digest

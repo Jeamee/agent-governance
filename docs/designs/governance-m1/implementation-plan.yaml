@@ -1,0 +1,127 @@
+schema_version: 2
+task_id: GOV-CLI-M1
+steps:
+  - step_id: STEP-001
+    kind: change
+    depends_on: []
+    targets:
+      - path: cli/src/governance/cli.py
+      - path: cli/pyproject.toml
+      - path: cli/uv.lock
+      - module_id: MODULE-M1-DECISION-VERIFY
+        prefix: cli/src/governance/verify/
+        scope_reason: result model aggregation and run binding live here
+      - module_id: MODULE-M1-TESTS
+        prefix: cli/tests/verify/
+        scope_reason: contract and aggregation tests
+    requirement_ids: [ACC-CLI-001, ARC-M1-003]
+  - step_id: STEP-002
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-M1-DECISION-SUBCHECKS
+        prefix: cli/src/governance/subchecks/
+        scope_reason: deterministic schema and authorization checks
+      - module_id: MODULE-M1-TESTS
+        prefix: cli/tests/subchecks/
+        scope_reason: subcheck behavior tests
+    requirement_ids: [ACC-SCHEMA-001, ACC-AUTH-001, ACC-AUTH-002, ACC-AUTH-003, ACC-AUTH-004, ACC-IPL-001, ACC-IPL-004, ACC-IPL-005, ACC-IPL-006, ACC-IPL-007, ACC-M1-SCHEMAVER-001]
+  - step_id: STEP-003
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-M1-DECISION-SUBCHECKS
+        prefix: cli/src/governance/subchecks/
+        scope_reason: frozen source and plan mapping checks
+      - module_id: MODULE-M1-TESTS
+        prefix: cli/tests/subchecks/
+        scope_reason: frozen and plan behavior tests
+    requirement_ids: [ACC-FRZ-001, ACC-FRZ-002, ACC-FRZ-003, ACC-FRZ-004, ACC-IPL-002, ACC-IPL-003, ACC-IPL-008, ACC-PLAN-001]
+  - step_id: STEP-004
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-M1-REPORTS
+        prefix: cli/src/governance/reports/
+        scope_reason: report parsing is isolated from decisions
+      - module_id: MODULE-M1-DECISION-SUBCHECKS
+        prefix: cli/src/governance/subchecks/
+        scope_reason: acceptance and effectiveness checks consume reports
+      - module_id: MODULE-M1-TESTS
+        prefix: cli/tests/subchecks/
+        scope_reason: report and acceptance tests
+    requirement_ids: [ACC-ACC-001, ACC-ACC-002, ACC-ACC-003, ACC-ACC-004, ACC-ATT-001, ACC-EFF-001]
+  - step_id: STEP-005
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-M1-DECISION-SUBCHECKS
+        prefix: cli/src/governance/subchecks/
+        scope_reason: coverage and policy decisions
+      - module_id: MODULE-M1-TESTS
+        prefix: cli/tests/subchecks/
+        scope_reason: coverage and policy tests
+    requirement_ids: [ACC-COV-001, ARC-M1-002, ACC-POL-001, ACC-POL-002, ACC-POL-003, OPS-M1-002]
+  - step_id: STEP-006
+    kind: change
+    depends_on: [STEP-002, STEP-003, STEP-004, STEP-005]
+    targets:
+      - module_id: MODULE-M1-FIXTURES
+        prefix: fixtures/m1/
+        scope_reason: frozen oracle paths map to concrete fixture input directories
+      - path: cli/tests/test_oracle_matrix.py
+    requirement_ids: [ACC-M1-ORACLE-001]
+  - step_id: STEP-007
+    kind: change
+    depends_on: [STEP-006]
+    targets:
+      - path: .github/workflows/bootstrap-schema.yml
+    requirement_ids: [OPS-M1-001]
+  - step_id: STEP-101
+    kind: verify
+    depends_on: [STEP-006]
+    verifier_ids: [TEST-M1-SUITE]
+    completion:
+      command_ids: [pytest-suite]
+      evidence_scene_ids: []
+      approval_rubric_ids: []
+  - step_id: STEP-102
+    kind: verify
+    depends_on: [STEP-006]
+    verifier_ids: [TEST-M1-FIXTURES]
+    completion:
+      command_ids: [run-fixtures]
+      evidence_scene_ids: []
+      approval_rubric_ids: []
+  - step_id: STEP-103
+    kind: verify
+    depends_on: [STEP-101]
+    verifier_ids: [TEST-M1-DUALMODE]
+    completion:
+      command_ids: [pytest-dualmode]
+      evidence_scene_ids: []
+      approval_rubric_ids: []
+  - step_id: STEP-104
+    kind: verify
+    depends_on: [STEP-101]
+    verifier_ids: [TEST-M1-COVERAGE]
+    completion:
+      command_ids: [diffcover-patch, branch-exact-independent, branch-exact-dogfood]
+      evidence_scene_ids: []
+      approval_rubric_ids: []
+  - step_id: STEP-105
+    kind: verify
+    depends_on: [STEP-104]
+    verifier_ids: [EVIDENCE-M1-MUTATION]
+    completion:
+      command_ids: []
+      evidence_scene_ids: [SCENE-M1-MUT-001]
+      approval_rubric_ids: [mutation-triage-v1]
+  - step_id: STEP-106
+    kind: verify
+    depends_on: [STEP-007]
+    verifier_ids: [EVIDENCE-M1-CI]
+    completion:
+      command_ids: []
+      evidence_scene_ids: [SCENE-M1-CI-001]
+      approval_rubric_ids: []
