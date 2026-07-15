@@ -10,6 +10,8 @@ from governance.subchecks.common import result
 
 def check_policy(payload: dict[str, Any]):
     data = mapping(payload, "policy")
+    if data.get("intentional_canary") is True:
+        return result("policy", False, "policy", "CANARY")
     valid = (
         data.get("protected_paths_changed") == []
         or data.get("valid_exception") is True
