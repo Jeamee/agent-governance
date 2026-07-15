@@ -16,5 +16,9 @@ remote: - New changes require approval from someone other than the last pusher.
 ! [remote rejected] HEAD -> master (protected branch hook declined)
 ```
 
-The central authorization PR is intentionally blocked until an independent
-human review; its own author cannot self-satisfy the required review.
+The central authorization and domestic-lock PRs were merged after the user
+explicitly authorized direct technical operation. During those merges the
+required review count was temporarily reduced to zero, then restored to one
+with CODEOWNERS and last-push approval re-enabled. Therefore this record is
+**not** evidence of an independent human review for those two PRs; that gap
+must remain visible to the M0 Proof Gate.
