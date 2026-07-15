@@ -14,19 +14,19 @@ Its frozen import and authorization are documented in
 `package-freeze.md`; schema self-validation is documented in
 `schema-self-validation.md`.
 
-## Real-trial instance: eligibility-filter
+## Real-trial interpretation
 
-The selected real task is `eligibility-filter`, as required by STEP-109.
-Its existing reviewed design sources are:
+The user clarified that implementing GOV-BOOTSTRAP-M0 itself is the real trial;
+no `eligibility-filter` business implementation is authorized. The previously
+created local eligibility-filter implementation worktree and branch were
+deleted without merge or deployment.
 
-- `/Users/jun/Codes/prodream/filter-system-design.md` (business design v7);
-- `/Users/jun/Codes/prodream/filter-system-architecture.md` (architecture v2.1).
+This differs from the frozen STEP-109 wording, which calls for a second,
+eligibility-filter instance. The difference is declared as `DEV-002` in the
+delivery request with `verification_impact: needs_review`. It cannot be
+silently treated as two completed instantiations.
 
-The trial has **not** completed all required stages: its trial-specific frozen
-three-layer instance, authorization, implementation delivery request, and
-human fail-closed Proof Gate record are absent. This document intentionally
-does not substitute the existing design documents for those required artifacts.
-
-Consequently `ACC-TRIAL-001`, `ACC-TPL-001`, STEP-109, and STEP-110 remain
-open pending a real, human-reviewed trial. This is a fail-closed result, not a
-passing template claim.
+Accordingly, the bootstrap instance supplies the actual end-to-end artifacts
+(frozen package, authorization, implementation commits, evidence, and delivery
+request), while `ACC-TPL-001`, STEP-109, and STEP-110 remain pending the human
+Proof Gate's decision on this authorized scope change.
