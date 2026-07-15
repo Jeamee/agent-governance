@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
+import subprocess
 from typing import Any
 
 import yaml
@@ -13,8 +15,6 @@ from governance.subchecks.common import result
 
 
 def branch_exact(report: Path, module_prefixes: list[str]) -> bool:
-    import json
-
     coverage = json.loads(report.read_text(encoding="utf-8"))
     files = coverage.get("files", {})
     for prefix in module_prefixes:
@@ -34,6 +34,28 @@ def branch_exact(report: Path, module_prefixes: list[str]) -> bool:
     return True
 
 
+def changed_source_files(base: str) -> list[str]:
+    completed = subprocess.run(
+        ["git", "diff", "--name-only", f"{base}...HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if completed.returncode != 0:
+        raise ValueError(f"coverage base is unreachable: {base}")
+    return [
+        path
+        for path in completed.stdout.splitlines()
+        if path.startswith("cli/src/governance/") and path.endswith(".py")
+    ]
+
+
+def changed_sources_present(report: Path, changed_paths: list[str]) -> bool:
+    coverage = json.loads(report.read_text(encoding="utf-8"))
+    covered_paths = {path.replace("\\", "/") for path in coverage.get("files", {})}
+    return all(path in covered_paths for path in changed_paths)
+
+
 def check_coverage(payload: dict[str, Any]):
     data = mapping(payload, "coverage")
     valid = (
@@ -50,6 +72,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--report", required=True, type=Path)
     parser.add_argument("--modules", required=True, type=Path)
     parser.add_argument("--branch-exact", nargs="+", required=True)
+    parser.add_argument("--base")
+    parser.add_argument("--changed-sources", action="store_true")
     args = parser.parse_args(argv)
     modules = yaml.safe_load(args.modules.read_text(encoding="utf-8"))["modules"]
     prefixes = [
@@ -61,6 +85,17 @@ def main(argv: list[str] | None = None) -> int:
         print("branch exact: FAIL")
         print("requested module is absent from modules.yaml")
         return 1
+    if args.changed_sources:
+        if args.base is None:
+            parser.error("--changed-sources requires --base")
+        try:
+            changed = changed_source_files(args.base)
+        except ValueError as error:
+            print(f"coverage sources: FAIL\n{error}")
+            return 1
+        if not changed_sources_present(args.report, changed):
+            print("coverage sources: FAIL")
+            return 1
     if not branch_exact(args.report, prefixes):
         print("branch exact: FAIL")
         return 1
