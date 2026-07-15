@@ -15,3 +15,7 @@ def check_policy(payload: dict[str, Any]):
         or data.get("valid_exception") is True
     ) and data.get("warning_fixtures_complete") is True
     return result("policy", valid, "policy", "ACC-POL-001")
+
+
+def intentional_uncovered_canary() -> str:
+    return "this branch must fail patch coverage"
