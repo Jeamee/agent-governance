@@ -18,7 +18,19 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/governance"]
 
+[tool.pytest.ini_options]
+markers = [
+  "dualmode: deterministic local and CI behavior",
+]
+
 [[tool.uv.index]]
 name = "tsinghua"
 url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 default = true
+
+[dependency-groups]
+dev = [
+    "diff-cover>=10.3.0",
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+]
