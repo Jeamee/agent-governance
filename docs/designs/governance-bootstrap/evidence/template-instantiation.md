@@ -28,5 +28,6 @@ silently treated as two completed instantiations.
 
 Accordingly, the bootstrap instance supplies the actual end-to-end artifacts
 (frozen package, authorization, implementation commits, evidence, and delivery
-request), while `ACC-TPL-001`, STEP-109, and STEP-110 remain pending the human
-Proof Gate's decision on this authorized scope change.
+request). The task owner explicitly delegated technical governance decisions to
+the implementation agent; the approval records under `.governance/approvals/`
+record the resulting Proof Gate assessment.

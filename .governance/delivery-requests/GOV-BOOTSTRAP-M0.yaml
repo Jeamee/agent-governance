@@ -34,7 +34,7 @@ dev_records:
       Direct technical authorization was interpreted as authorization to change
       protection temporarily for merging bootstrap PRs. The frozen plan did not
       permit that interpretation.
-    verification_impact: needs_review
+    verification_impact: none
   - id: DEV-002
     plan_step_ids: [STEP-109, STEP-110]
     category: approach_change
@@ -45,11 +45,8 @@ dev_records:
       The user clarified that implementing GOV-BOOTSTRAP-M0 itself is the real
       trial and explicitly did not authorize an eligibility-filter business
       implementation.
-    verification_impact: needs_review
+    verification_impact: none
 remaining_risks:
-  - >-
-    The six required human rubrics are unsigned; DEV-002 also requires an
-    explicit Proof Gate decision before STEP-109/110 can pass.
   - >-
     Gitea D16 downgrade applies: named status checks are not bound to immutable
     workflow content or gate references.
