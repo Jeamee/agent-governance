@@ -156,10 +156,18 @@ def find_authorization(instance_dir: Path, repository_root: Path, supplied: Path
     fixture_authorization = instance_dir / "authorization-record.yaml"
     if fixture_authorization.exists():
         return fixture_authorization
+    task_id = load_yaml(instance_dir / "requirements.yaml").get("task_id")
     authorizations = sorted((repository_root / ".governance" / "authorizations").glob("*.yaml"))
-    if len(authorizations) != 1:
-        raise ValueError("expected exactly one protected authorization or --authorization")
-    return authorizations[0]
+    matches = [
+        authorization
+        for authorization in authorizations
+        if load_yaml(authorization).get("task_id") == task_id
+    ]
+    if len(matches) != 1:
+        raise ValueError(
+            f"expected exactly one protected authorization for task {task_id!r} or --authorization"
+        )
+    return matches[0]
 
 
 def validate_instance(
