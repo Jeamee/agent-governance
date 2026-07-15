@@ -12,4 +12,6 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           version: "0.11.2"
-      - run: uv run --project cli python -m governance.schema_check docs/designs/governance-bootstrap/
+      - run: uv run --locked --project cli python -m governance.schema_check docs/designs/governance-bootstrap/
+      - run: uv run --locked --project cli python -m governance.schema_check fixtures/schema-compat/synthetic-m1-v2/ --authorization fixtures/schema-compat/synthetic-m1-v2/authorization-record.yaml
+      - run: uv run --locked --project cli python -m governance.schema_check --validate-examples

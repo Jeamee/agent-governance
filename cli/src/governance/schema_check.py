@@ -1,4 +1,4 @@
-"""Validate an M0 design instance against the published JSON Schema drafts."""
+"""Validate frozen design instances with the authorization-selected schema version."""
 
 from __future__ import annotations
 
@@ -20,6 +20,13 @@ SCHEMA_BY_FILENAME = {
     "evidence-scenes.yaml": "evidence-scenes.schema.json",
     "implementation-plan.yaml": "implementation-plan.schema.json",
 }
+VERSIONED_SCHEMA_FILENAMES = {
+    **SCHEMA_BY_FILENAME,
+    "authorization-record.yaml": "authorization-record.schema.json",
+    "delivery-request.yaml": "delivery-request.schema.json",
+    "ci-attestation.yaml": "ci-attestation.schema.json",
+    "authorization-revocation.yaml": "authorization-revocation.schema.json",
+}
 
 
 def load_yaml(path: Path) -> Any:
@@ -30,6 +37,16 @@ def load_yaml(path: Path) -> Any:
 def load_json(path: Path) -> dict[str, Any]:
     with path.open(encoding="utf-8") as stream:
         return json.load(stream)
+
+
+def authorization_schema_version(authorization_path: Path) -> int:
+    authorization = load_yaml(authorization_path)
+    version = authorization.get("schema_version", 1)
+    if version not in {1, 2}:
+        raise ValueError(
+            f"{authorization_path}: unsupported authorization schema_version {version!r}"
+        )
+    return version
 
 
 def validate_file(instance_path: Path, schema_path: Path) -> list[str]:
@@ -43,6 +60,32 @@ def validate_file(instance_path: Path, schema_path: Path) -> list[str]:
         f"{instance_path.name}: {'.'.join(map(str, error.path)) or '<root>'}: {error.message}"
         for error in errors
     ]
+
+
+def schema_path(repository_root: Path, version: int, filename: str) -> Path:
+    return repository_root / "schemas" / f"v{version}" / filename
+
+
+def validate_version_declarations(
+    instance_dir: Path,
+    version: int,
+) -> list[str]:
+    if version == 1:
+        return []
+
+    errors: list[str] = []
+    for filename in VERSIONED_SCHEMA_FILENAMES:
+        instance_path = instance_dir / filename
+        if not instance_path.exists() or filename == "authorization-record.yaml":
+            continue
+        instance = load_yaml(instance_path)
+        declared_version = instance.get("schema_version")
+        if declared_version != version:
+            errors.append(
+                f"{filename}: worker-writable schema_version {declared_version!r} "
+                f"does not match authorization version {version}"
+            )
+    return errors
 
 
 def collect_ids(items: list[dict[str, Any]], key: str) -> set[str]:
@@ -107,38 +150,86 @@ def find_repository_root(instance_dir: Path) -> Path:
     raise ValueError("could not locate repository root from instance directory")
 
 
-def validate_authorizations(repository_root: Path, schema_dir: Path) -> list[str]:
-    authorization_dir = repository_root / ".governance" / "authorizations"
-    if not authorization_dir.exists():
-        return []
+def find_authorization(instance_dir: Path, repository_root: Path, supplied: Path | None) -> Path:
+    if supplied is not None:
+        return supplied.resolve()
+    fixture_authorization = instance_dir / "authorization-record.yaml"
+    if fixture_authorization.exists():
+        return fixture_authorization
+    authorizations = sorted((repository_root / ".governance" / "authorizations").glob("*.yaml"))
+    if len(authorizations) != 1:
+        raise ValueError("expected exactly one protected authorization or --authorization")
+    return authorizations[0]
 
-    schema_path = schema_dir / "authorization-record.schema.json"
+
+def validate_instance(
+    instance_dir: Path,
+    authorization_path: Path,
+) -> tuple[int, list[str]]:
+    repository_root = find_repository_root(instance_dir)
+    version = authorization_schema_version(authorization_path)
+    errors = validate_file(
+        authorization_path,
+        schema_path(repository_root, version, "authorization-record.schema.json"),
+    )
+    errors.extend(validate_version_declarations(instance_dir, version))
+
+    for filename, schema_filename in SCHEMA_BY_FILENAME.items():
+        instance_path = instance_dir / filename
+        if not instance_path.exists():
+            errors.append(f"missing required design instance: {instance_path}")
+            continue
+        errors.extend(
+            validate_file(instance_path, schema_path(repository_root, version, schema_filename))
+        )
+
+    if not errors:
+        errors.extend(validate_cross_references(instance_dir))
+    return version, errors
+
+
+def validate_examples(repository_root: Path) -> list[str]:
     errors: list[str] = []
-    for instance_path in sorted(authorization_dir.glob("*.yaml")):
-        errors.extend(validate_file(instance_path, schema_path))
+    for version in (1, 2):
+        cases = load_yaml(repository_root / "schemas" / "examples" / f"v{version}" / "cases.yaml")
+        for schema_name, pair in cases.items():
+            validator = Draft202012Validator(
+                load_json(schema_path(repository_root, version, f"{schema_name}.schema.json")),
+                format_checker=FormatChecker(),
+            )
+            if list(validator.iter_errors(pair["valid"])):
+                errors.append(f"v{version}/{schema_name}: valid example was rejected")
+            if not list(validator.iter_errors(pair["invalid"])):
+                errors.append(f"v{version}/{schema_name}: invalid example was accepted")
     return errors
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("instance_dir", type=Path)
+    parser.add_argument("instance_dir", type=Path, nargs="?")
+    parser.add_argument("--authorization", type=Path)
+    parser.add_argument("--validate-examples", action="store_true")
     args = parser.parse_args(argv)
 
-    instance_dir = args.instance_dir.resolve()
-    repository_root = find_repository_root(instance_dir)
-    schema_dir = repository_root / "schemas"
+    if args.instance_dir is None and not args.validate_examples:
+        parser.error("instance_dir is required unless --validate-examples is used")
+
     errors: list[str] = []
+    versions: list[int] = []
+    repository_root: Path | None = None
+    if args.instance_dir is not None:
+        instance_dir = args.instance_dir.resolve()
+        repository_root = find_repository_root(instance_dir)
+        authorization_path = find_authorization(instance_dir, repository_root, args.authorization)
+        version, instance_errors = validate_instance(instance_dir, authorization_path)
+        versions.append(version)
+        errors.extend(instance_errors)
 
-    for filename, schema_filename in SCHEMA_BY_FILENAME.items():
-        instance_path = instance_dir / filename
-        if not instance_path.exists():
-            errors.append(f"missing required bootstrap instance: {instance_path}")
-            continue
-        errors.extend(validate_file(instance_path, schema_dir / schema_filename))
-
-    errors.extend(validate_authorizations(repository_root, schema_dir))
-    if not errors:
-        errors.extend(validate_cross_references(instance_dir))
+    if args.validate_examples:
+        examples_root = repository_root or Path.cwd()
+        if not (examples_root / "schemas").exists():
+            examples_root = find_repository_root(examples_root)
+        errors.extend(validate_examples(examples_root))
 
     if errors:
         print("schema self-validation: FAIL")
@@ -146,8 +237,10 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     print("schema self-validation: PASS")
-    for filename in SCHEMA_BY_FILENAME:
-        print(f"validated: {filename}")
+    for version in versions:
+        print(f"validated schema version: v{version}")
+    if args.validate_examples:
+        print("validated: schema examples")
     return 0
 
 
