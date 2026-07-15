@@ -1,0 +1,84 @@
+schema_version: 2
+verifiers:
+  - id: TEST-M1-SUITE
+    type: test
+    runner_profile: local-python
+    command_id: pytest-suite
+    report_slot: junit-suite
+    environment: { python: '3.12' }
+    mock_policy: boundary_forbidden
+    expected_shards: [suite]
+    expected_instances: all
+    required_content: [all executed test acceptance ids]
+  - id: TEST-M1-FIXTURES
+    type: test
+    runner_profile: local-python
+    command_id: run-fixtures
+    report_slot: fixtures
+    environment: { python: '3.12' }
+    mock_policy: boundary_forbidden
+    expected_shards: [fixture-oracle]
+    expected_instances: 32
+    required_content: [all 8x4 oracle fixture ids]
+  - id: TEST-M1-DUALMODE
+    type: test
+    runner_profile: local-python
+    command_id: pytest-dualmode
+    report_slot: junit-dualmode
+    environment: { python: '3.12' }
+    mock_policy: boundary_forbidden
+    expected_shards: [dualmode]
+    expected_instances: all
+    required_content: [local ci deterministic equality]
+  - id: TEST-M1-COVERAGE
+    type: test
+    runner_profile: local-python
+    command_id: branch-exact-independent
+    report_slot: coverage
+    environment: { python: '3.12' }
+    mock_policy: boundary_forbidden
+    expected_shards: [coverage-json]
+    expected_instances: all
+    required_content: [patch coverage and each decision module branch exact]
+  - id: EVIDENCE-M1-CI
+    type: evidence
+    runner_profile: local-python
+    report_slot: evidence-ci
+    environment: { github: required }
+    mock_policy: boundary_forbidden
+    expected_shards: [canary]
+    expected_instances: all
+    required_content: [platform check runs and merge refusal]
+  - id: EVIDENCE-M1-MUTATION
+    type: evidence
+    runner_profile: local-python
+    report_slot: evidence-mutation
+    environment: { python: '3.12' }
+    mock_policy: boundary_forbidden
+    expected_shards: [mutation]
+    expected_instances: all
+    required_content: [mutation triage record]
+commands:
+  - command_id: pytest-suite
+    runner_profile: local-python
+    command: uv run --locked --project cli pytest cli/tests --junitxml reports/junit-suite.xml --cov governance --cov-branch --cov-report xml:reports/coverage.xml --cov-report json:reports/coverage.json
+  - command_id: pytest-dualmode
+    runner_profile: local-python
+    command: uv run --locked --project cli pytest cli/tests -m dualmode --junitxml reports/junit-dualmode.xml
+  - command_id: run-fixtures
+    runner_profile: local-python
+    command: uv run --locked --project cli python -m governance.fixtures_runner fixtures/m1 --oracle docs/designs/governance-m1/fixture-oracle.yaml --report reports/fixtures.json
+  - command_id: diffcover-patch
+    runner_profile: local-python
+    command: uv run --locked --project cli diff-cover reports/coverage.xml --compare-branch ${authorization.coverage_base_commit} --fail-under 90
+  - command_id: branch-exact-independent
+    runner_profile: local-python
+    command: git show ${authorization.design_ref.commit}:docs/designs/governance-m1/tools/branch_exact.py > $TMPDIR/branch_exact.py && git show ${authorization.design_ref.commit}:docs/designs/governance-m1/modules.yaml > $TMPDIR/modules.yaml && uv run --locked --project cli python $TMPDIR/branch_exact.py --coverage-json reports/coverage.json --modules $TMPDIR/modules.yaml MODULE-M1-DECISION-VERIFY MODULE-M1-DECISION-SUBCHECKS
+  - command_id: branch-exact-dogfood
+    runner_profile: local-python
+    command: uv run --locked --project cli python -m governance.subchecks.coverage --report reports/coverage.json --modules docs/designs/governance-m1/modules.yaml --branch-exact MODULE-M1-DECISION-VERIFY MODULE-M1-DECISION-SUBCHECKS
+rubrics:
+  - rubric_id: m1-proof-gate-v1
+    question: all frozen requirements have executed evidence with no unapproved weakening
+  - rubric_id: mutation-triage-v1
+    question: each surviving mutation has a recorded technical disposition
