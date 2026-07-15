@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance delivery request",
+  "type": "object",
+  "required": ["task_id", "design_ref", "gate_ref", "task_type", "implementation_commits", "out_of_manifest_branch", "dev_records", "remaining_risks"],
+  "properties": {
+    "task_id": {"type": "string"},
+    "design_ref": {"type": "object"},
+    "gate_ref": {"type": "object"},
+    "task_type": {"enum": ["bugfix", "feature", "refactor"]},
+    "implementation_commits": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "out_of_manifest_branch": {"type": "object", "required": ["declared", "description"], "properties": {"declared": {"type": "boolean"}, "description": {"type": "string"}}, "additionalProperties": false},
+    "dev_records": {"type": "array", "items": {"type": "object", "required": ["id", "plan_step_ids", "category", "actual_files", "affected_requirements", "reason", "verification_impact"], "properties": {"id": {"type": "string", "pattern": "^DEV-[0-9]{3}$"}, "plan_step_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "category": {"enum": ["file_split", "reorder", "approach_change", "extra_file"]}, "actual_files": {"type": "array", "items": {"type": "string"}}, "affected_requirements": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "reason": {"type": "string", "minLength": 1}, "verification_impact": {"enum": ["none", "tests_updated", "needs_review"]}}, "additionalProperties": false}},
+    "remaining_risks": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

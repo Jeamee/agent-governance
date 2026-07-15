@@ -1,0 +1,15 @@
+schema_version: 2
+task_id: GOV-CLI-M1-SYNTHETIC
+design_ref:
+  repository: Jeamee/agent-governance
+  commit: 8894457f2466dded2ef13989ef44598355ca704c
+  path: docs/designs/governance-m1/
+  digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+gate_ref:
+  repository: Jeamee/agent-governance
+  commit: 8894457f2466dded2ef13989ef44598355ca704c
+allowed_repositories: [agent-governance]
+implementation_plan_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+required_profiles: [local-python]
+lead_repository: agent-governance
+coverage_base_commit: 8894457f2466dded2ef13989ef44598355ca704c

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance fixture oracle v2",
+  "type": "object",
+  "required": ["schema_version", "task_id", "fixtures"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "task_id": {"type": "string", "minLength": 1},
+    "fixtures": {"type": "array", "minItems": 32, "items": {"type": "object", "required": ["id", "subcheck", "class", "input", "expected_status", "forbidden_misclassification"], "properties": {"id": {"type": "string", "pattern": "^FIX-[A-Z0-9-]+$"}, "subcheck": {"enum": ["schema", "authorization", "frozen", "acceptance", "plan", "coverage", "effectiveness", "policy"]}, "class": {"enum": ["pass", "reject", "boundary", "bypass"]}, "input": {"type": "string", "minLength": 1}, "expected_status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}, "forbidden_misclassification": {"type": "array", "minItems": 1, "items": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

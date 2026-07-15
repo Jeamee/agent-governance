@@ -1,0 +1,5 @@
+schema_version: 2
+authorization_task_id: GOV-CLI-M1-SYNTHETIC
+authorization_digest: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+revoked_at: '2026-07-15T00:00:00Z'
+approved_by: standing-authorization

@@ -1,0 +1,8 @@
+schema_version: 2
+checked_out_shas: { agent-governance: 8894457f2466dded2ef13989ef44598355ca704c }
+gate_ref: { repository: Jeamee/agent-governance, commit: 8894457f2466dded2ef13989ef44598355ca704c }
+verifier_results: []
+report_slots: []
+runner: { name: local, tool_versions: {} }
+generated_at: '2026-07-15T00:00:00Z'
+status: pass

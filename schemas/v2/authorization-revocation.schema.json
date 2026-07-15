@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance authorization revocation v2",
+  "type": "object",
+  "required": ["schema_version", "authorization_task_id", "authorization_digest", "revoked_at", "approved_by"],
+  "properties": {"schema_version": {"const": 2}, "authorization_task_id": {"type": "string", "minLength": 1}, "authorization_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "revoked_at": {"type": "string", "format": "date-time"}, "approved_by": {"type": "string", "minLength": 1}, "replacement_authorization_task_id": {"type": "string", "minLength": 1}},
+  "additionalProperties": false
+}

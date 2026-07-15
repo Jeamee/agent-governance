@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance CI attestation v2",
+  "type": "object",
+  "required": ["schema_version", "checked_out_shas", "gate_ref", "verifier_results", "report_slots", "runner", "generated_at", "status"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "checked_out_shas": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^[a-f0-9]{40}$"}},
+    "gate_ref": {"$ref": "#/$defs/gateRef"},
+    "verifier_results": {"type": "array", "items": {"type": "object", "required": ["id", "status", "attempts"], "properties": {"id": {"type": "string"}, "status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}, "attempts": {"type": "integer", "minimum": 1}, "details": {"type": "string"}}, "additionalProperties": false}},
+    "report_slots": {"type": "array", "items": {"type": "object", "required": ["slot", "profile", "digest"], "properties": {"slot": {"type": "string"}, "profile": {"type": "string"}, "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "additionalProperties": false}},
+    "coverage": {"type": "object", "properties": {"patch_line_percent": {"type": "number", "minimum": 0, "maximum": 100}, "branch_exact_modules": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false},
+    "effectiveness": {"type": "object"},
+    "evidence_artifact_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "runner": {"type": "object", "required": ["name", "tool_versions"], "properties": {"name": {"type": "string"}, "tool_versions": {"type": "object"}}, "additionalProperties": false},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}
+  },
+  "$defs": {"gateRef": {"type": "object", "required": ["repository", "commit"], "properties": {"repository": {"type": "string"}, "commit": {"type": "string", "pattern": "^[a-f0-9]{40}$"}}, "additionalProperties": false}},
+  "additionalProperties": false
+}

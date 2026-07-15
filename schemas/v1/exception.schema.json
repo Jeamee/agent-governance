@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance exception record",
+  "type": "object",
+  "required": ["repository", "base_sha", "head_sha", "diff_digest", "policy_rule", "paths", "reason", "expires_at", "approval", "revoked"],
+  "properties": {
+    "repository": {"type": "string"},
+    "base_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "head_sha": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+    "diff_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "policy_rule": {"type": "string"},
+    "paths": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "reason": {"type": "string", "minLength": 1},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "approval": {"type": "object"},
+    "revoked": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

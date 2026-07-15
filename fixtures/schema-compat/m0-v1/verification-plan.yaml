@@ -1,0 +1,63 @@
+# GOV-BOOTSTRAP-M0 verification plan（硬冻结）
+# M0 无 CLI：evidence/human_approval 由人工执行，fail-closed 规则与设计包 §6 相同（缺产物=fail，不是空过）
+# 唯一可执行 verifier 是 schema 自校验脚本（占位命令，M1 由 CLI schema 子检查取代）
+verifiers:
+  - id: EVIDENCE-REPO-PROT
+    type: evidence
+    report_slot: evidence/repo-protection.md
+    required_content: [push 拒绝截图或 API 响应, token scope 清单, CODEOWNERS 生效证明]
+
+  - id: EVIDENCE-MIG
+    type: evidence
+    report_slot: evidence/methodology-migration.md
+    required_content: [迁移前后 sha256 对比, 本地 symlink 指向证明]
+
+  - id: EVIDENCE-PKG
+    type: evidence
+    report_slot: evidence/package-freeze.md
+    required_content: [入仓 commit SHA, 冻结集合各文件 sha256 与本地冻结版一致对照表]
+
+  - id: EVIDENCE-SCH
+    type: evidence
+    report_slot: evidence/schema-self-validation.md
+    command_id: validate-bootstrap-instances
+    required_content: [每个实例的校验输出, 与设计包 §5 偏差申报（如有）]
+
+  - id: EVIDENCE-PROBE-GH
+    type: evidence
+    report_slot: evidence/probe-github.md
+    required_content: [三项各自的实测步骤/截图/支持与否判定]
+
+  - id: EVIDENCE-PROBE-GITEA
+    type: evidence
+    report_slot: evidence/probe-gitea.md
+    required_content: [九项各自的实测步骤/截图/支持与否判定, D16 降级分支是否触发的建议]
+
+  - id: EVIDENCE-POC-DIFFCOVER
+    type: evidence
+    report_slot: evidence/poc-diffcover.md
+    required_content: [两栈 Cobertura 样例, TSX 行号对齐验证结果, 结论或自研决策建议]
+
+  - id: EVIDENCE-POC-UV
+    type: evidence
+    report_slot: evidence/poc-uv.md
+    required_content: [两种方式实测记录, lock 生效证明, 无缓存复现记录, 选型结论]
+
+  - id: EVIDENCE-TPL
+    type: evidence
+    report_slot: evidence/template-instantiation.md
+    required_content: [bootstrap 与试跑任务两次实例化的文件清单与链接]
+
+commands:
+  - command_id: validate-bootstrap-instances
+    runner_profile: local-python
+    command: uv run --project cli python -m governance.schema_check docs/designs/governance-bootstrap/
+    note: M0 占位实现（最小 jsonschema 校验脚本）；M1 由 governance verify schema 取代
+
+rubrics:
+  - { rubric_id: repo-structure-v1, question: 仓内是否只有七个白名单目录与 bootstrap 自身实例？ }
+  - { rubric_id: schema-draft-v1, question: 草案与设计包 §5 的每处偏差是否已申报并可接受？ }
+  - { rubric_id: adapter-thinness-v1, question: adapter 骨架里是否混入了任何本应属于 CLI 的治理逻辑？ }
+  - { rubric_id: bootstrap-trial-v1, question: 试跑任务是否真实、流程是否完整、人工对账是否按 fail-closed 执行？ }
+  - { rubric_id: plan-quality-v1, question: 步骤是否具体、目标是否明确、判据是否可观察、有无空壳步骤？ }
+  - { rubric_id: probe-conclusion-v1, question: 每项探针是否有非含糊判定，足以落地 D16/D14 分支？ }

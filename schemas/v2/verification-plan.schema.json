@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance verification plan v2",
+  "type": "object",
+  "required": ["schema_version", "verifiers", "commands", "rubrics"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "verifiers": {"type": "array", "items": {"type": "object", "required": ["id", "type", "runner_profile", "report_slot", "environment", "mock_policy", "expected_shards", "expected_instances"], "properties": {"id": {"type": "string", "minLength": 1}, "type": {"type": "string", "minLength": 1}, "runner_profile": {"type": "string", "minLength": 1}, "command_id": {"type": "string", "minLength": 1}, "report_slot": {"type": "string", "minLength": 1}, "environment": {"type": "object"}, "mock_policy": {"type": "string", "minLength": 1}, "expected_shards": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "expected_instances": {"oneOf": [{"const": "all"}, {"type": "integer", "minimum": 1}]}, "required_content": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}},
+    "commands": {"type": "array", "items": {"type": "object", "required": ["command_id", "runner_profile", "command"], "properties": {"command_id": {"type": "string", "minLength": 1}, "runner_profile": {"type": "string", "minLength": 1}, "command": {"type": "string", "minLength": 1}, "note": {"type": "string"}}, "additionalProperties": false}},
+    "rubrics": {"type": "array", "items": {"type": "object", "required": ["rubric_id", "question"], "properties": {"rubric_id": {"type": "string", "minLength": 1}, "question": {"type": "string", "minLength": 1}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

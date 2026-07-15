@@ -1,11 +1,1 @@
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Governance implementation plan",
-  "type": "object",
-  "required": ["task_id", "steps"],
-  "properties": {
-    "task_id": {"type": "string"},
-    "steps": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["step_id", "kind", "depends_on"], "properties": {"step_id": {"type": "string", "pattern": "^STEP-[0-9]{3}$"}, "kind": {"enum": ["change", "verify"]}, "depends_on": {"type": "array", "items": {"type": "string", "pattern": "^STEP-[0-9]{3}$"}}, "targets": {"type": "array", "items": {"type": "object", "properties": {"path": {"type": "string"}, "module_id": {"type": "string"}, "prefix": {"type": "string"}, "scope_reason": {"type": "string"}}, "additionalProperties": false}}, "requirement_ids": {"type": "array", "items": {"type": "string"}}, "verifier_ids": {"type": "array", "items": {"type": "string"}}, "completion": {"type": "object", "properties": {"command_ids": {"type": "array", "items": {"type": "string"}}, "evidence_scene_ids": {"type": "array", "items": {"type": "string"}}, "approval_rubric_ids": {"type": "array", "items": {"type": "string"}}}, "additionalProperties": false}, "note": {"type": "string"}}, "allOf": [{"if": {"properties": {"kind": {"const": "change"}}}, "then": {"required": ["targets", "requirement_ids"]}}, {"if": {"properties": {"kind": {"const": "verify"}}}, "then": {"required": ["verifier_ids", "completion"]}}], "additionalProperties": false}}
-  },
-  "additionalProperties": false
-}
+v1/implementation-plan.schema.json

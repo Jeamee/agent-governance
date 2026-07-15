@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Governance verify output v2",
+  "type": "object",
+  "required": ["schema_version", "mode", "status", "exit_code", "subchecks"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "mode": {"enum": ["local", "ci"]},
+    "status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]},
+    "exit_code": {"enum": [0, 1, 2, 3]},
+    "subchecks": {"type": "array", "minItems": 8, "items": {"type": "object", "required": ["name", "status", "missing_ids", "sources", "reproduction"], "properties": {"name": {"enum": ["schema", "authorization", "frozen", "acceptance", "plan", "coverage", "effectiveness", "policy"]}, "status": {"enum": ["pass", "fail", "unverifiable", "needs_review"]}, "missing_ids": {"type": "array", "items": {"type": "string"}}, "sources": {"type": "array", "items": {"type": "string"}}, "reproduction": {"type": "string"}}, "additionalProperties": false}}
+  },
+  "additionalProperties": false
+}

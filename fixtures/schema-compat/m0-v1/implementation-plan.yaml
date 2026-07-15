@@ -1,0 +1,168 @@
+# GOV-BOOTSTRAP-M0 实施方案（第三层机器真源；文件不可变基线，D19）
+# 只覆盖 M0。M1–M4 各自出新计划 + 新 authorization（一阶段一授权）
+task_id: GOV-BOOTSTRAP-M0
+steps:
+  # ---------- change ----------
+  - step_id: STEP-001
+    kind: change
+    depends_on: []
+    targets:
+      - path: README.md
+      - module_id: MODULE-GOV-CI
+        prefix: .github/
+        scope_reason: CODEOWNERS 与最小 CI 是仓库保护配置的载体
+    requirement_ids: [OPS-GOV-001, ARC-GOV-001, ACC-REPO-001, ACC-REPO-002]
+    note: 建 public 仓、七目录骨架、main 保护、CODEOWNERS（.github/ .governance/ docs/designs/）、实施 token 无 admin scope
+
+  - step_id: STEP-002
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-GOV-METHODOLOGY
+        prefix: methodology/
+        scope_reason: 方法论迁入是该模块的全部内容
+    requirement_ids: [ACC-MIG-001, ARC-GOV-003]
+    note: 迁入 AI_DELIVERY_METHODOLOGY.md；sha256 核对一致后将 ~/.agents/ 原件替换为 symlink/checkout
+
+  - step_id: STEP-003
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-GOV-SCHEMAS
+        prefix: schemas/
+        scope_reason: 八个 schema 草案是该模块的全部内容
+    requirement_ids: [ACC-SCH-001, ARC-GOV-004]
+    note: 按设计包 §5 写八个 JSON Schema 草案；与 §5 的偏差书面申报
+
+  - step_id: STEP-004
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-GOV-TEMPLATES
+        prefix: templates/
+        scope_reason: 三层骨架 + debate + goal-prompt 是该模块的全部内容
+    requirement_ids: [ACC-TPL-001]
+
+  - step_id: STEP-005
+    kind: change
+    depends_on: [STEP-001]
+    targets:
+      - module_id: MODULE-GOV-CLI
+        prefix: cli/
+        scope_reason: uv 分发 POC 需要可安装的占位骨架
+      - module_id: MODULE-GOV-ADAPTERS
+        prefix: adapters/
+        scope_reason: 骨架注释版，证明薄适配器结构
+      - module_id: MODULE-GOV-FIXTURES
+        prefix: fixtures/
+        scope_reason: 目录与四类 fixture 约定 README
+      - path: docs/hooks-install.md
+    requirement_ids: [ACC-POC-002, ARC-GOV-002]
+    note: cli/ 含 pyproject + uv.lock + 空入口 + validate-bootstrap-instances 最小实现
+
+  - step_id: STEP-006
+    kind: change
+    depends_on: [STEP-002, STEP-003, STEP-004]
+    targets:
+      - module_id: MODULE-GOV-DOCS
+        prefix: docs/designs/governance-bootstrap/
+        scope_reason: 本任务治理实例入仓（设计包冻结版 + 三层 + 各 yaml）
+    requirement_ids: [ACC-PKG-001]
+    note: 内容与本地冻结版逐字节一致，经人审 PR 合入
+
+  - step_id: STEP-007
+    kind: change
+    depends_on: [STEP-006]
+    targets:
+      - module_id: MODULE-GOV-GOVERNANCE
+        prefix: .governance/
+        scope_reason: policy.yaml 与 bootstrap 自身 authorization record
+    requirement_ids: [ACC-PKG-001]
+    note: STEP-006 合入后按其 commit SHA 计算 design_ref.digest 与 implementation_plan_digest，人审合入 authorization（bootstrap 顺序特例：授权只能在冻结内容入仓后产生）
+
+  - step_id: STEP-008
+    kind: change
+    depends_on: [STEP-005, STEP-007]
+    targets:
+      - module_id: MODULE-GOV-DOCS
+        prefix: docs/designs/governance-bootstrap/evidence/
+        scope_reason: 全部探针/POC/迁移/保护证据文档落档处
+    requirement_ids: [ACC-PROBE-001, ACC-POC-001, OPS-GOV-002, OPS-GOV-003, ACC-TRIAL-001]
+    note: 探针与 POC 在独立探针仓/样例仓执行，结论文档落此目录
+
+  # ---------- verify ----------
+  - step_id: STEP-101
+    kind: verify
+    depends_on: [STEP-003, STEP-006]
+    verifier_ids: [EVIDENCE-SCH]
+    completion:
+      command_ids: [validate-bootstrap-instances]
+      evidence_scene_ids: []
+      approval_rubric_ids: [schema-draft-v1]
+
+  - step_id: STEP-102
+    kind: verify
+    depends_on: [STEP-001]
+    verifier_ids: [EVIDENCE-REPO-PROT]
+    completion:
+      evidence_scene_ids: [SCENE-PROT-001]
+
+  - step_id: STEP-103
+    kind: verify
+    depends_on: [STEP-008]
+    verifier_ids: [EVIDENCE-PROBE-GH]
+    completion:
+      evidence_scene_ids: [SCENE-PROBE-001]
+
+  - step_id: STEP-104
+    kind: verify
+    depends_on: [STEP-008]
+    verifier_ids: [EVIDENCE-PROBE-GITEA]
+    completion:
+      evidence_scene_ids: [SCENE-PROBE-001]
+      approval_rubric_ids: [probe-conclusion-v1]
+
+  - step_id: STEP-105
+    kind: verify
+    depends_on: [STEP-008]
+    verifier_ids: [EVIDENCE-POC-DIFFCOVER]
+    completion:
+      evidence_scene_ids: [SCENE-POC-001]
+
+  - step_id: STEP-106
+    kind: verify
+    depends_on: [STEP-005, STEP-008]
+    verifier_ids: [EVIDENCE-POC-UV]
+    completion:
+      evidence_scene_ids: [SCENE-POC-002]
+
+  - step_id: STEP-107
+    kind: verify
+    depends_on: [STEP-002]
+    verifier_ids: [EVIDENCE-MIG]
+    completion:
+      evidence_scene_ids: []
+
+  - step_id: STEP-108
+    kind: verify
+    depends_on: [STEP-007]
+    verifier_ids: [EVIDENCE-PKG]
+    completion:
+      evidence_scene_ids: []
+
+  - step_id: STEP-109
+    kind: verify
+    depends_on: [STEP-004, STEP-101]
+    verifier_ids: []
+    completion:
+      approval_rubric_ids: [bootstrap-trial-v1]
+    note: 真实业务任务人工全流程试跑的验收
+
+  - step_id: STEP-110
+    kind: verify
+    depends_on: [STEP-109]
+    verifier_ids: [EVIDENCE-TPL]
+    completion:
+      evidence_scene_ids: []
+      approval_rubric_ids: [repo-structure-v1, adapter-thinness-v1, plan-quality-v1]
+    note: M0 出口审查：结构 / 薄适配器 / 模板质量三项 rubric 一起过，作 Proof Gate 收口
